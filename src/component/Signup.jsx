@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
 
+const API = import.meta.env.VITE_API_URL;
+
 function Signup({ onSignup }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignup = () => {
-    const users = JSON.parse(localStorage.getItem('users')) || {};
-    if (users[username]) {
-      alert('Username already exists!');
-    } else {
-      users[username] = { password, entries: [] };
-      localStorage.setItem('users', JSON.stringify(users));
-      onSignup(username);
+  const handleSignup = async () => {
+    try {
+      const res = await fetch(`${API}/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      onSignup(username); // call the parent to mark the user as logged in
+    } catch (error) {
+      alert('Signup failed: ' + error.message);
     }
   };
 
