@@ -1,37 +1,42 @@
 import React, { useState, useEffect } from 'react';
 
+const API = import.meta.env.VITE_API_URL;
+
 function Journal({ user }) {
   const [entries, setEntries] = useState([]);
   const [text, setText] = useState('');
 
-  useEffect(() => {
-    const users = JSON.parse(localStorage.getItem('users'));
-    setEntries(users[user]?.entries || []);
-  }, [user]);
-
-  const saveEntries = (updatedEntries) => {
-    const users = JSON.parse(localStorage.getItem('users'));
-    users[user].entries = updatedEntries;
-    localStorage.setItem('users', JSON.stringify(users));
+  const fetchEntries = async () => {
+    const res = await fetch(`${API}/entries/${user}`);
+    const data = await res.json();
+    setEntries(data);
   };
 
-  const addEntry = () => {
+  useEffect(() => {
+    fetchEntries();
+  }, [user]);
+
+  const addEntry = async () => {
     if (!text.trim()) return;
     const newEntry = {
-      id: Date.now(),
+      username: user,
       text,
       date: new Date().toLocaleString()
     };
-    const updatedEntries = [newEntry, ...entries];
-    setEntries(updatedEntries);
+    await fetch(`${API}/entries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newEntry)
+    });
     setText('');
-    saveEntries(updatedEntries);
+    fetchEntries();
   };
 
-  const deleteEntry = (id) => {
-    const updatedEntries = entries.filter((e) => e.id !== id);
-    setEntries(updatedEntries);
-    saveEntries(updatedEntries);
+  const deleteEntry = async (id) => {
+    await fetch(`${API}/entries/${user}/${id}`, {
+      method: 'DELETE'
+    });
+    fetchEntries();
   };
 
   return (
@@ -41,10 +46,10 @@ function Journal({ user }) {
       <button onClick={addEntry}>Add Entry</button>
       <div className="entries">
         {entries.map((entry) => (
-          <div key={entry.id} className="entry">
+          <div key={entry._id} className="entry">
             <div className="entry-header">
               <span>{entry.date}</span>
-              <button onClick={() => deleteEntry(entry.id)}>🗑️</button>
+              <button onClick={() => deleteEntry(entry._id)}>🗑️</button>
             </div>
             <p>{entry.text}</p>
           </div>
@@ -53,5 +58,6 @@ function Journal({ user }) {
     </div>
   );
 }
+
 
 export default Journal;

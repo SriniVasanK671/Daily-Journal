@@ -4,15 +4,19 @@ function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    const users = JSON.parse(localStorage.getItem('users')) || {};
-    if (users[username] && users[username].password === password) {
+  const handleLogin = async () => {
+    try {
+      const res = await fetch(`${API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (!res.ok) throw new Error('Invalid credentials');
       onLogin(username);
-    } else {
-      alert('Invalid credentials!');
+    } catch (err) {
+      alert('Login failed: ' + err.message);
     }
   };
-
   return (
     <div className="auth-box">
       <h2>Login</h2>

@@ -1,0 +1,12 @@
+# Ignore env variables
+.env
+
+# Node modules
+node_modules/
+
+# Build files
+dist/
+build/
+
+# OS-specific files
+.DS_Store
