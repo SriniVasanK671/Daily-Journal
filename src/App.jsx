@@ -46,8 +46,9 @@ function Signup({ onSignup }) {
       if (!res.ok) throw new Error('Signup failed');
       await res.text();
       onSignup(username);
-    } catch (err) {
-      alert(err.message);
+    } catch (error) {
+       console.error('Signup error:', error);
+  alert('Signup failed: ' + error.message);;
     }
   };
 
