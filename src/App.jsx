@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-const API = 'http://localhost:5000/api';
+const API = import.meta.env.VITE_API_URL;
+
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
