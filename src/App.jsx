@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-const API = import.meta.env.VITE_API_URL;
+// const API ='localhost:3000/api';
 
-
+const API = 'https://daily-journal2.onrender.com/api'; // Use this for production
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
+      
       const res = await fetch(`${API}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -17,6 +18,7 @@ function Login({ onLogin }) {
       });
       if (!res.ok) throw new Error('Invalid credentials');
       onLogin(username);
+
     } catch (err) {
       alert(err.message);
     }
