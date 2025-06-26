@@ -17,6 +17,7 @@ function Login({ onLogin }) {
       alert('Login failed: ' + err.message);
     }
   };
+  
   return (
     <div className="auth-box">
       <h2>Login</h2>

@@ -7,6 +7,7 @@ function Signup({ onSignup }) {
   const [password, setPassword] = useState('');
 
   const handleSignup = async () => {
+    console.log("API URL =", import.meta.env.VITE_API_URL);
     try {
       const res = await fetch(`${API}/signup`, {
         method: 'POST',
